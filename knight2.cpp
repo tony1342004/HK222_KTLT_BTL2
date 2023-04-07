@@ -1,5 +1,22 @@
 #include "knight2.h"
+class readFile
+{
+private:
+    ifstream ifs;
+    string content;
 
+public:
+    readFile(const string &file_armyknights) : ifs(file_armyknights) {}
+
+    void read()
+    {
+        string line;
+        while (getline(ifs, line))
+        {
+            content += line + '\n';
+        }
+    }
+};
 /* * * BEGIN implementation of class BaseBag * * */
 
 /* * * END implementation of class BaseBag * * */
@@ -11,12 +28,12 @@ string BaseKnight::toString() const {
     //      but the format output must be the same
     string s("");
     s += "[Knight:id:" + to_string(id) 
-        + "hp:" + to_string(hp) 
-        + "maxhp:" + to_string(maxhp)
-        + "level:" + to_string(level)
-        + "gil:" + to_string(gil)
-        + bag->toString()
-        + "knight_type:" + typeString[knightType]
+        + ",hp:" + to_string(hp) 
+        + ",maxhp:" + to_string(maxhp)
+        + ",level:" + to_string(level)
+        + ",gil:" + to_string(gil)
+        + "," + bag->toString()
+        + ",knight_type:" + typeString[knightType]
         + "]";
     return s;
 }
@@ -35,7 +52,7 @@ void ArmyKnights::printInfo() const {
         << ";GuinevereHair:" << this->hasGuinevereHair()
         << ";ExcaliburSword:" << this->hasExcaliburSword()
         << endl
-        << string('-', 50) << endl;
+        << string(50, '-') << endl;
 }
 
 void ArmyKnights::printResult(bool win) const {
