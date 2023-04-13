@@ -5,220 +5,271 @@
 
 // #define DEBUG
 
+class BaseKnight;
+class BaseBag;
+class ArmyKnights;
 class Events
 {
     int evntnum;
     int *evnt;
 
 public:
+    friend ArmyKnights;
     Events(const string &file_events);
     int count() const;
     int get(int i) const;
     ~Events();
 };
 
-class BaseOpponent
-{
-};
-class MadBear : public BaseOpponent
-{
-};
-class Bandit : public BaseOpponent
-{
-};
-class LordLupin : public BaseOpponent
-{
-};
-class Elf : public BaseOpponent
-{
-};
-class Troll : public BaseOpponent
-{
-};
-class Tornbery : public BaseOpponent
-{
-};
-class QueenofCards : public BaseOpponent
-{
-};
-class NinaDeRings : public BaseOpponent
-{
-};
-class DurianGarden : public BaseOpponent
-{
-};
-class OmegaWeapon : public BaseOpponent
-{
-};
-class Hades : public BaseOpponent
-{
-};
-
-class BaseKnight
-{
-protected:
-    int id;
-    int hp;
-    int maxhp;
-    int level;
-    int gil;
-    int antidote;
-    BaseBag *bag;
-    KnightType knightType;
-    int phoenixdownI;
-
-public:
-    static int snt(int a);
-    static int pythagoras(int n);
-    static BaseKnight *create(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI);
-    string toString() const;
-    KnightType getType() const;
-};
 enum ItemType
 {
-    Antidote = 1,
-    PhoenixI,
-    PhoenixII,
-    PhoenixIII,
-    PhoenixIV
+    ANTIDOTE = 0,
+    PHOENIXI,
+    PHOENIXII,
+    PHOENIXIII,
+    PHOENIXIV
 };
 
 class BaseItem
 {
 public:
+    ItemType itemType;
+    BaseItem(ItemType itemType);
     virtual bool canUse(BaseKnight *knight) = 0;
     virtual void use(BaseKnight *knight) = 0;
 };
 
 class Antidote : public BaseItem
 {
+public:
+    Antidote();
+    bool canUse(BaseKnight *knight);
+    void use(BaseKnight *knight);
 };
 class PhoenixDownI : public BaseItem
 {
+public:
+    PhoenixDownI();
+    bool canUse(BaseKnight *knight);
+    void use(BaseKnight *knight);
 };
 class PhoenixDownII : public BaseItem
 {
+public:
+    PhoenixDownII();
+    bool canUse(BaseKnight *knight);
+    void use(BaseKnight *knight);
 };
 class PhoenixDownIII : public BaseItem
 {
+public:
+    PhoenixDownIII();
+    bool canUse(BaseKnight *knight);
+    void use(BaseKnight *knight);
 };
 class PhoenixDownIV : public BaseItem
 {
+public:
+    PhoenixDownIV();
+    bool canUse(BaseKnight *knight);
+    void use(BaseKnight *knight);
 };
 
-// Making a node struct containing an int data and a pointer
-// to next node
-struct Node
+enum KnightType
 {
-    string data;
-    Node *next;
-    // Parameterised constructor with default argument
-    Node(string val) : data(val), next(nullptr) {}
-    // Parameterise constructor
-    Node(string val, Node *tempNext) : data(val), next(tempNext) {}
+    PALADIN = 0,
+    LANCELOT,
+    DRAGON,
+    NORMAL
 };
 
-class LinkedList
+class BaseKnight
 {
-    // Head pointer
-    Node *head;
+protected:
+    int id, hp, maxhp, level, gil, antidote, phoenixdownI;
+    bool poisened;
+    BaseBag *bag;
+    KnightType knightType;
 
 public:
-    // default constructor. Initializing head pointer
-    LinkedList() : head(nullptr) {}
+    friend ArmyKnights;
+    friend PhoenixDownI;
+    friend PhoenixDownII;
+    friend PhoenixDownIII;
+    friend PhoenixDownIV;
+    friend Antidote;
+    static int snt(int a);
+    static int pythagoras(int n);
+    static BaseKnight *create(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+    string toString() const;
+};
 
-    // inserting elements (At start of the list)
-    void insert(string val);
+class PaladinKnight : public BaseKnight
+{
+public:
+    PaladinKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+};
+class LancelotKnight : public BaseKnight
+{
+public:
+    LancelotKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+};
+class DragonKnight : public BaseKnight
+{
+public:
+    DragonKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+};
+class NormalKnight : public BaseKnight
+{
+public:
+    NormalKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+};
 
-    // loop over the list. return true if element found
-    bool search(string val);
-    void remove(string val);
-    void display();
+class BaseOpponent
+{
+protected:
+    int baseDamage, gil, levelO, eventid, appear, UltiHP;
+    string OpponentType;
+
+public:
+    friend ArmyKnights;
+    friend PhoenixDownI;
+    friend PhoenixDownII;
+    friend PhoenixDownIII;
+    friend PhoenixDownIV;
+    friend Antidote;
+    BaseOpponent(string OpponentType);
+    BaseOpponent(string OppnentType, int appear);
+    BaseOpponent(string OpponentType, int baseDamage, int gil, int eventid);
+};
+class MadBear : public BaseOpponent
+{
+public:
+    MadBear(int i);
+};
+class Bandit : public BaseOpponent
+{
+public:
+    Bandit(int i);
+};
+class LordLupin : public BaseOpponent
+{
+public:
+    LordLupin(int i);
+};
+class Elf : public BaseOpponent
+{
+public:
+    Elf(int i);
+};
+class Troll : public BaseOpponent
+{
+public:
+    Troll(int i);
+};
+class Tornbery : public BaseOpponent
+{
+public:
+    Tornbery(int i);
+};
+class QueenofCards : public BaseOpponent
+{
+public:
+    QueenofCards(int i);
+};
+class NinaDeRings : public BaseOpponent
+{
+public:
+    NinaDeRings();
+};
+class DurianGarden : public BaseOpponent
+{
+public:
+    DurianGarden();
+};
+class OmegaWeapon : public BaseOpponent
+{
+public:
+    OmegaWeapon();
+};
+class Hades : public BaseOpponent
+{
+public:
+    Hades();
+};
+class Ultimecia : public BaseOpponent
+{
+public:
+    Ultimecia();
+};
+
+// node in linked list
+struct Node
+{
+    BaseItem *data;
+    Node *next;
+    // default
+    Node(BaseItem *val) : data(val), next(nullptr) {}
+    Node(BaseItem *val, Node *tempNext) : data(val), next(tempNext) {}
 };
 
 class BaseBag
 {
     BaseKnight *knight;
 
+protected:
+    Node *head;
+
 public:
-    virtual bool insertFirst(BaseItem *item);
-    virtual BaseItem *get(ItemType itemType);
-    virtual string toString() const;
+    friend ArmyKnights;
+    BaseBag() : head(nullptr) {}
+    virtual bool insertFirst(BaseItem *item) = 0;
+    BaseItem *get(ItemType itemType);
+    string toString();
+    void deleteItem(BaseItem *prevX);
+    bool search(BaseItem *item);
+    int countItem();
 };
 
-enum KnightType
+class PaladinBag : public BaseBag
 {
-    PALADIN = 1,
-    LANCELOT,
-    DRAGON,
-    NORMAL
+public:
+    PaladinBag();
+    bool insertFirst(BaseItem *item);
 };
+class LancelotBag : public BaseBag
+{
+    int maxItems = 14;
 
-class PaladinKnight : public BaseKnight
-{
 public:
-    PaladinKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI)
-    {
-        this->id = id;
-        this->maxhp = maxhp;
-        this->hp = maxhp;
-        this->level = level;
-        this->gil = gil;
-        this->antidote = antidote;
-        this->phoenixdownI = phoenixdownI;
-        this->knightType = PALADIN;
-    }
+    LancelotBag();
+    bool insertFirst(BaseItem *item);
 };
-class LancelotKnight : public BaseKnight
+class DragonBag : public BaseBag
 {
+    int maxItems = 16;
+
 public:
-    LancelotKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI)
-    {
-        this->id = id;
-        this->maxhp = maxhp;
-        this->hp = maxhp;
-        this->level = level;
-        this->gil = gil;
-        this->antidote = antidote;
-        this->phoenixdownI = phoenixdownI;
-        this->knightType = LANCELOT;
-    }
+    DragonBag();
+    bool insertFirst(BaseItem *item);
 };
-class DragonKnight : public BaseKnight
+class NormalBag : public BaseBag
 {
+    int maxItems = 19;
+
 public:
-    DragonKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI)
-    {
-        this->id = id;
-        this->maxhp = maxhp;
-        this->hp = maxhp;
-        this->level = level;
-        this->gil = gil;
-        this->antidote = antidote;
-        this->phoenixdownI = phoenixdownI;
-        this->knightType = DRAGON;
-    }
-};
-class NormalKnight : public BaseKnight
-{
-public:
-    NormalKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI)
-    {
-        this->id = id;
-        this->maxhp = maxhp;
-        this->hp = maxhp;
-        this->level = level;
-        this->gil = gil;
-        this->antidote = antidote;
-        this->phoenixdownI = phoenixdownI;
-        this->knightType = NORMAL;
-    }
+    NormalBag();
+    bool insertFirst(BaseItem *item);
 };
 
 class ArmyKnights
 {
     BaseKnight **army;
     int armyNum;
+    bool PaladinShield;
+    bool LancelotSpear;
+    bool GuinevereHair;
+    bool ExcaliburSword;
 
 public:
     ArmyKnights(const string &file_armyknights);
@@ -227,6 +278,7 @@ public:
     bool adventure(Events *events);
     int count() const;
     BaseKnight *lastKnight() const;
+    int compare(BaseItem *arr[4]);
 
     bool hasPaladinShield() const;
     bool hasLancelotSpear() const;
@@ -240,6 +292,7 @@ public:
 class KnightAdventure
 {
 private:
+    // xu ly, cap nhat hp cua hiep si trong event
     ArmyKnights *armyKnights;
     Events *events;
 
