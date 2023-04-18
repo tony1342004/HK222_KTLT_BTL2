@@ -32,7 +32,7 @@ enum ItemType
 
 class BaseItem
 {
-public:
+public: 
     ItemType itemType;
     BaseItem(ItemType itemType);
     virtual bool canUse(BaseKnight *knight) = 0;
@@ -92,6 +92,7 @@ protected:
     KnightType knightType;
 
 public:
+    BaseKnight(int id, int maxhp, int level, int phoenixdownI, int gil, int antidote, KnightType knightType);
     friend ArmyKnights;
     friend PhoenixDownI;
     friend PhoenixDownII;
@@ -100,29 +101,29 @@ public:
     friend Antidote;
     static int snt(int a);
     static int pythagoras(int n);
-    static BaseKnight *create(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+    static BaseKnight *create(int id, int maxhp, int level, int phoenixdownI, int gil, int antidote);
     string toString() const;
 };
 
 class PaladinKnight : public BaseKnight
 {
 public:
-    PaladinKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+    PaladinKnight(int id, int maxhp, int level, int phoenixdownI, int gil, int antidote, KnightType knightType);
 };
 class LancelotKnight : public BaseKnight
 {
 public:
-    LancelotKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+    LancelotKnight(int id, int maxhp, int level, int phoenixdownI, int gil, int antidote, KnightType knightType);
 };
 class DragonKnight : public BaseKnight
 {
 public:
-    DragonKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+    DragonKnight(int id, int maxhp, int level, int phoenixdownI, int gil, int antidote, KnightType knightType);
 };
 class NormalKnight : public BaseKnight
 {
 public:
-    NormalKnight(int id, int maxhp, int level, int gil, int antidote, int phoenixdownI, bool poisened);
+    NormalKnight(int id, int maxhp, int level, int phoenixdownI, int gil, int antidote, KnightType knightType);
 };
 
 class BaseOpponent
@@ -138,8 +139,6 @@ public:
     friend PhoenixDownIII;
     friend PhoenixDownIV;
     friend Antidote;
-    BaseOpponent(string OpponentType);
-    BaseOpponent(string OppnentType, int appear);
     BaseOpponent(string OpponentType, int baseDamage, int gil, int eventid);
 };
 class MadBear : public BaseOpponent
@@ -210,7 +209,7 @@ struct Node
     Node *next;
     // default
     Node(BaseItem *val) : data(val), next(nullptr) {}
-    Node(BaseItem *val, Node *tempNext) : data(val), next(tempNext) {}
+    Node(BaseItem *val, Node *Next) : data(val), next(Next) {}
 };
 
 class BaseBag
@@ -222,7 +221,7 @@ protected:
 
 public:
     friend ArmyKnights;
-    BaseBag() : head(nullptr) {}
+    BaseBag();
     virtual bool insertFirst(BaseItem *item) = 0;
     BaseItem *get(ItemType itemType);
     string toString();
@@ -298,7 +297,6 @@ private:
 
 public:
     KnightAdventure();
-    ~KnightAdventure(); // TODO:
 
     void loadArmyKnights(const string &);
     void loadEvents(const string &);
