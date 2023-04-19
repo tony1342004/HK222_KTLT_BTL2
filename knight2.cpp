@@ -435,7 +435,6 @@ int ArmyKnights::compare(BaseItem *arr[4])
 
 bool ArmyKnights::fight(BaseOpponent *opponent)
 {
-    cout<<endl;
     int id = armyNum - 1;
     if (opponent->OpponentType == "MadBear" || opponent->OpponentType == "Bandit" || opponent->OpponentType == "LordLupin" || opponent->OpponentType == "Elf" || opponent->OpponentType == "Troll")
     {
@@ -455,7 +454,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         if (army[id]->poisened == true)
         {
             if (army[id]->bag->get(ANTIDOTE) != nullptr)
-                army[id]->poisened == false;
+                army[id]->poisened = false;
         }
         else
         {
@@ -649,7 +648,7 @@ bool ArmyKnights::adventure(Events *events)
                         int i = this->armyNum - 1;
                         if (army[i]->knightType == DRAGON || army[i]->knightType == PALADIN || army[i]->knightType == LANCELOT)
                         {
-                            int knightBaseDamage;
+                            double knightBaseDamage;
                             if (army[i]->knightType == DRAGON)
                                 knightBaseDamage = 0.075;
                             else if (army[i]->knightType == PALADIN)
