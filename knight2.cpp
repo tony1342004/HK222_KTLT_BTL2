@@ -35,13 +35,13 @@ Events::~Events()
 
 /* * * BEGIN implementation of class BaseOpponent* * */
 BaseOpponent::BaseOpponent(string OpponentType, int baseDamage, int gil, int eventid) : OpponentType(OpponentType), baseDamage(baseDamage), gil(gil), eventid(eventid), appear(0) {}
-MadBear::MadBear(int i) : BaseOpponent("MadBear", 10, 100, 1) { levelO = (i + eventid) % 10 + 1; }
-Bandit::Bandit(int i) : BaseOpponent("Bandit", 15, 150, 2) { levelO = (i + eventid) % 10 + 1; }
-LordLupin::LordLupin(int i) : BaseOpponent("LordLupin", 45, 450, 3) { levelO = (i + eventid) % 10 + 1; }
-Elf::Elf(int i) : BaseOpponent("Elf", 75, 750, 4) { levelO = (i + eventid) % 10 + 1; }
-Troll::Troll(int i) : BaseOpponent("Troll", 95, 800, 5) { levelO = (i + eventid) % 10 + 1; }
-Tornbery::Tornbery(int i) : BaseOpponent("Tornbery", 0, 0, 6) { levelO = (i + eventid) % 10 + 1; }
-QueenofCards::QueenofCards(int i) : BaseOpponent("QueenofCards", 0, 0, 7) { levelO = (i + eventid) % 10 + 1; }
+MadBear::MadBear(int i) : BaseOpponent("MadBear", 10, 100, 1) { this->levelO = (i + this->eventid) % 10 + 1; }
+Bandit::Bandit(int i) : BaseOpponent("Bandit", 15, 150, 2) { this->levelO = (i + this->eventid) % 10 + 1; }
+LordLupin::LordLupin(int i) : BaseOpponent("LordLupin", 45, 450, 3) { this->levelO = (i + this->eventid) % 10 + 1; }
+Elf::Elf(int i) : BaseOpponent("Elf", 75, 750, 4) { this->levelO = (i + this->eventid) % 10 + 1; }
+Troll::Troll(int i) : BaseOpponent("Troll", 95, 800, 5) { this->levelO = (i + this->eventid) % 10 + 1; }
+Tornbery::Tornbery(int i) : BaseOpponent("Tornbery", 0, 0, 6) { this->levelO = (i + this->eventid) % 10 + 1; }
+QueenofCards::QueenofCards(int i) : BaseOpponent("QueenofCards", 0, 0, 7) { this->levelO = (i + this->eventid) % 10 + 1; }
 NinaDeRings::NinaDeRings() : BaseOpponent("NinadeRings", 0, 0, 8) {}
 DurianGarden::DurianGarden() : BaseOpponent("DurianGarden", 0, 0, 9) {}
 OmegaWeapon::OmegaWeapon() : BaseOpponent("OmegaWeapon", 0, 0, 10) {}
@@ -438,6 +438,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     int id = armyNum - 1;
     if (opponent->OpponentType == "MadBear" || opponent->OpponentType == "Bandit" || opponent->OpponentType == "LordLupin" || opponent->OpponentType == "Elf" || opponent->OpponentType == "Troll")
     {
+        cout<<endl;
         if (army[id]->level < opponent->levelO && army[id]->knightType != LANCELOT)
             army[id]->hp -= opponent->baseDamage * (opponent->levelO - army[id]->level);
         else if (army[id]->level < opponent->levelO && army[id]->knightType == LANCELOT)
@@ -447,6 +448,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     }
     else if (opponent->OpponentType == "Tornbery")
     {
+        cout<<endl;
         if (army[id]->level >= opponent->levelO)
             army[id]->level++;
         else
@@ -531,13 +533,15 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
                 army[id]->hp = 0;
         }
     }
+
     BaseItem *temp1 = army[id]->bag->get(PHOENIXI);
     BaseItem *temp2 = army[id]->bag->get(PHOENIXII);
     BaseItem *temp3 = army[id]->bag->get(PHOENIXIII);
     BaseItem *temp4 = army[id]->bag->get(PHOENIXIV);
     BaseItem *arr[4] = {temp1, temp2, temp3, temp4};
     int n = compare(arr);
-    for (int i = 0; i < n; i++)
+    cout<<n<<endl;
+    /*for (int i = 0; i < n; i++)
     {
         if (arr[i]->canUse(army[id]) == true)
         {
@@ -546,12 +550,13 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
             prevX->data = army[id]->bag->get(arr[i]->itemType);
             army[id]->bag->deleteItem(prevX->data);
         }
-    }
+    }*/
+
     if (army[id]->hp <= 0)
         return false;
-    else
-        return true;
+    return true;
 }
+
 bool ArmyKnights::adventure(Events *events)
 {
     BaseItem *item;
@@ -599,7 +604,10 @@ bool ArmyKnights::adventure(Events *events)
                 break;
             }
             if (fight(opponent) == false)
+            {
+                delete army[armyNum - 1];
                 armyNum--;
+            }
             else
             {
                 printInfo();
