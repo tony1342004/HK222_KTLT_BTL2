@@ -1,5 +1,4 @@
 #include "knight2.h"
-//                DRAGON can not put Antidote in the Bag (not done yet)
 /* * * Begin class Events * * */
 Events::Events(const string &file_events)
 {
@@ -299,10 +298,9 @@ bool PaladinBag::insertFirst(BaseItem *item)
 LancelotBag::LancelotBag() : BaseBag() {}
 bool LancelotBag::insertFirst(BaseItem *item)
 {
-    bool tf = true;
     int count = countItem();
     if (count >= maxItems)
-        tf = false;
+        return false;
     else
     {
         Node *new_node = new Node(item);
@@ -313,17 +311,15 @@ bool LancelotBag::insertFirst(BaseItem *item)
             new_node->next = head;
             head = new_node;
         }
-        tf = true;
     }
-    return tf;
+    return true;
 }
 DragonBag::DragonBag() : BaseBag() {}
 bool DragonBag::insertFirst(BaseItem *item)
 {
-    bool tf = true;
     int count = countItem();
     if (count >= maxItems)
-        tf = false;
+        return false;
     else
     {
         Node *new_node = new Node(item);
@@ -334,17 +330,15 @@ bool DragonBag::insertFirst(BaseItem *item)
             new_node->next = head;
             head = new_node;
         }
-        tf = true;
     }
-    return tf;
+    return true;
 }
 NormalBag::NormalBag() : BaseBag() {}
 bool NormalBag::insertFirst(BaseItem *item)
 {
-    bool tf;
     int count = countItem();
     if (count >= maxItems)
-        tf = false;
+        return false;
     else
     {
         Node *new_node = new Node(item);
@@ -355,9 +349,8 @@ bool NormalBag::insertFirst(BaseItem *item)
             new_node->next = head;
             head = new_node;
         }
-        tf = true;
     }
-    return tf;
+    return true;
 }
 /* * * END implementation of class BaseBag * * */
 
@@ -400,7 +393,7 @@ ArmyKnights::ArmyKnights(const string &file_armyknights)
             for (int j = 0; j < army[i]->phoenixdownI; j++)
                 army[i]->bag->insertFirst(item);
         }
-        if (army[i]->antidote != 0)
+        if (army[i]->antidote != 0 && army[i]->knightType != DRAGON)
         {
             item = new Antidote();
             for (int j = 0; j < army[i]->antidote; j++)
@@ -805,6 +798,8 @@ void KnightAdventure::run()
         armyKnights->printResult(true);
     else
         armyKnights->printResult(false);
+    armyKnights->~ArmyKnights();
+    events->~Events();
 }
 
 /* * * END implementation of class KnightAdventure * * */
