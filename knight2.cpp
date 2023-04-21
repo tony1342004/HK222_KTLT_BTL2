@@ -439,9 +439,9 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     int id = armyNum - 1;
     if (opponent->OpponentType == "MadBear" || opponent->OpponentType == "Bandit" || opponent->OpponentType == "LordLupin" || opponent->OpponentType == "Elf" || opponent->OpponentType == "Troll")
     {
-        if (army[id]->level < opponent->levelO && army[id]->knightType != LANCELOT)
+        if (army[id]->level < opponent->levelO && army[id]->knightType != LANCELOT && army[id]->knightType != PALADIN)
             army[id]->hp -= opponent->baseDamage * (opponent->levelO - army[id]->level);
-        else if (army[id]->level < opponent->levelO && army[id]->knightType == LANCELOT)
+        else if (army[id]->knightType == LANCELOT || army[id]->knightType == PALADIN)
             army[id]->gil += opponent->gil;
         else if (army[id]->level >= opponent->levelO)
             army[id]->gil += opponent->gil;
@@ -450,7 +450,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     {
         if (army[id]->level >= opponent->levelO)
             army[id]->level++;
-        else
+        else if (army[id]->knightType != DRAGON)
             army[id]->poisened = true;
         if (army[id]->poisened == true)
         {
@@ -473,15 +473,16 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     {
         if (army[id]->level >= opponent->levelO)
             army[id]->gil *= 2;
-        else
+        else if (army[id]->knightType != PALADIN)
             army[id]->gil /= 2;
     }
     else if (opponent->OpponentType == "NinadeRings")
     {
-        if (army[id]->gil >= 50)
+        if (army[id]->gil >= 50 || army[id]->knightType == PALADIN)
             if (army[id]->hp < int((army[id]->maxhp) / 3))
             {
-                army[id]->gil -= 50;
+                if (army[id]->knightType != PALADIN)
+                    army[id]->gil -= 50;
                 army[id]->hp += int((army[id]->maxhp) / 5);
             }
     }
