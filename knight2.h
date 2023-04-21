@@ -226,7 +226,7 @@ public:
     BaseItem *get(ItemType itemType);
     string toString();
     void deleteItem(BaseItem *prevX);
-    bool search(BaseItem *item);
+    bool search(ItemType itemType);
     int countItem();
 };
 
@@ -278,7 +278,6 @@ public:
     int count() const;
     BaseKnight *lastKnight() const;
     int compare(BaseItem *arr[4]);
-
     bool hasPaladinShield() const;
     bool hasLancelotSpear() const;
     bool hasGuinevereHair() const;
