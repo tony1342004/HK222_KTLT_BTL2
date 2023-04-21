@@ -705,9 +705,9 @@ bool ArmyKnights::adventure(Events *events)
                 }
                 else if (hasLancelotSpear() == true && hasPaladinShield() == true && hasGuinevereHair() == true)
                 {
-                    int i = this->armyNum - 1;
-                    while (i >= 0)
+                    while (this->armyNum > 0)
                     {
+                        int i = this->armyNum - 1;
                         if (army[i]->knightType == DRAGON || army[i]->knightType == PALADIN || army[i]->knightType == LANCELOT)
                         {
                             double knightBaseDamage;
@@ -721,20 +721,17 @@ bool ArmyKnights::adventure(Events *events)
                             opponent->UltiHP -= UltiDamage;
                             if (opponent->UltiHP >= 0)
                             {
-                                if (i != armyNum - 1)
-                                    for (int j = i; j < armyNum - 1; j++)
-                                        army[j] = army[j + 1];
+                                delete army[armyNum - 1];
                                 this->armyNum--;
-                                i--;
                             }
-                            if (opponent->UltiHP <= 0 && i > 0)
+                            if (opponent->UltiHP <= 0 && this->armyNum > 0)
                             {
                                 printInfo();
                                 return true;
                             }
                         }
                         else
-                            i--;
+                            this->armyNum--;
                     }
                 }
                 else
