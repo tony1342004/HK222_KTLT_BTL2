@@ -34,7 +34,8 @@ Events::~Events()
 /* * * End class Events * * */
 
 /* * * BEGIN implementation of class BaseOpponent* * */
-BaseOpponent::BaseOpponent(string OpponentType, int baseDamage, int gil, int eventid) : OpponentType(OpponentType), baseDamage(baseDamage), gil(gil), eventid(eventid), appear(0) {}
+BaseOpponent::BaseOpponent(string OpponentType, int baseDamage, int gil, int eventid) : OpponentType(OpponentType), baseDamage(baseDamage), gil(gil), eventid(eventid), appear(false) {}
+BaseOpponent::BaseOpponent(string OpponentType, int eventid, bool appear) : OpponentType(OpponentType), eventid(eventid), appear(appear) {}
 MadBear::MadBear(int i) : BaseOpponent("MadBear", 10, 100, 1) { this->levelO = (i + this->eventid) % 10 + 1; }
 Bandit::Bandit(int i) : BaseOpponent("Bandit", 15, 150, 2) { this->levelO = (i + this->eventid) % 10 + 1; }
 LordLupin::LordLupin(int i) : BaseOpponent("LordLupin", 45, 450, 3) { this->levelO = (i + this->eventid) % 10 + 1; }
@@ -44,8 +45,8 @@ Tornbery::Tornbery(int i) : BaseOpponent("Tornbery", 0, 0, 6) { this->levelO = (
 QueenofCards::QueenofCards(int i) : BaseOpponent("QueenofCards", 0, 0, 7) { this->levelO = (i + this->eventid) % 10 + 1; }
 NinaDeRings::NinaDeRings() : BaseOpponent("NinadeRings", 0, 0, 8) {}
 DurianGarden::DurianGarden() : BaseOpponent("DurianGarden", 0, 0, 9) {}
-OmegaWeapon::OmegaWeapon() : BaseOpponent("OmegaWeapon", 0, 0, 10) {}
-Hades::Hades() : BaseOpponent("Hades", 0, 0, 11) {}
+OmegaWeapon::OmegaWeapon(bool appear) : BaseOpponent("OmegaWeapon", 10, appear) {}
+Hades::Hades(bool appear) : BaseOpponent("Hades", 11, appear) {}
 Ultimecia::Ultimecia() : BaseOpponent("Ultimecia", 0, 0, 99) { UltiHP = 5000; }
 /* * * END implementation of class BaseOpponent * * */
 
@@ -449,7 +450,10 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     else if (opponent->OpponentType == "Tornbery")
     {
         if (army[id]->level >= opponent->levelO)
+        {
+            army[id]->poisened = false;
             army[id]->level++;
+        }
         else if (army[id]->knightType != DRAGON)
             army[id]->poisened = true;
         if (army[id]->poisened == true)
@@ -488,33 +492,27 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     }
     else if (opponent->OpponentType == "DurianGarden")
         army[id]->hp = army[id]->maxhp;
-    else if (opponent->OpponentType == "OmegaWeapon")
+    else if (opponent->OpponentType == "OmegaWeapon" && opponent->appear == false)
     {
-        if (opponent->appear == 0)
+        if ((army[id]->hp == army[id]->maxhp && army[id]->level == 10) || army[id]->knightType == DRAGON)
         {
-            if ((army[id]->hp == army[id]->maxhp && army[id]->level == 10) || army[id]->knightType == DRAGON)
-            {
-                opponent->appear = 1;
-                army[id]->level = 10;
-                army[id]->gil = 999;
-            }
-            else
-                army[id]->hp = 0;
+            army[id]->level = 10;
+            army[id]->gil = 999;
+            opponent->appear = true;
         }
+        else
+            army[id]->hp = 0;
     }
-    else if (opponent->OpponentType == "Hades")
+    else if (opponent->OpponentType == "Hades" && opponent->appear == false)
     {
-        if (opponent->appear == 0)
+        if ((army[id]->level == 10) || (army[id]->knightType == PALADIN && army[id]->level >= 8))
         {
-            if ((army[id]->level == 10) || (army[id]->knightType == PALADIN && army[id]->level >= 8))
-            {
-                opponent->appear = 1;
-                if (this->PaladinShield == false)
-                    this->PaladinShield = true;
-            }
-            else
-                army[id]->hp = 0;
+            if (this->PaladinShield == false)
+                this->PaladinShield = true;
+            opponent->appear = true;
         }
+        else
+            army[id]->hp = 0;
     }
     if (army[id]->bag->countItem() != 0)
     {
@@ -533,6 +531,12 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
                 temp = temp->next;
         }
     }
+    if (army[id]->hp <= 0)
+        if (army[id]->gil >= 100)
+        {
+            army[id]->gil -= 100;
+            army[id]->hp = int(army[id]->maxhp / 2);
+        }
     if (army[id]->hp > 999)
         army[id]->hp = 999;
     if (army[id]->level > 10)
@@ -590,6 +594,8 @@ bool ArmyKnights::adventure(Events *events)
 {
     BaseItem *item;
     BaseOpponent *opponent;
+    bool appearOmegaWeapon = false;
+    bool appearHades = false;
     int i = 0;
     while (i < events->evntnum)
     {
@@ -626,11 +632,17 @@ bool ArmyKnights::adventure(Events *events)
                 opponent = new DurianGarden();
                 break;
             case 10:
-                opponent = new OmegaWeapon();
+                opponent = new OmegaWeapon(appearOmegaWeapon);
                 break;
             case 11:
-                opponent = new Hades();
+                opponent = new Hades(appearHades);
                 break;
+            }
+            if ((eveID == 10 && appearOmegaWeapon == true) || (eveID == 11 && appearHades == true))
+            {
+                i++;
+                printInfo();
+                continue;
             }
             if (fight(opponent) == false)
             {
@@ -644,6 +656,10 @@ bool ArmyKnights::adventure(Events *events)
             }
             else
             {
+                if (opponent->OpponentType == "Hades" && opponent->appear == true)
+                    appearHades = true;
+                if (opponent->OpponentType == "OmegaWeapon" && opponent->appear == true)
+                    appearOmegaWeapon = true;
                 printInfo();
                 i++;
             }
@@ -680,7 +696,7 @@ bool ArmyKnights::adventure(Events *events)
                 else
                     this->ExcaliburSword = false;
                 break;
-            default:
+            case 99:
                 opponent = new Ultimecia;
                 if (hasExcaliburSword() == true)
                 {
@@ -689,9 +705,9 @@ bool ArmyKnights::adventure(Events *events)
                 }
                 else if (hasLancelotSpear() == true && hasPaladinShield() == true && hasGuinevereHair() == true)
                 {
-                    while (this->armyNum > 0)
+                    int i = this->armyNum - 1;
+                    while (i >= 0)
                     {
-                        int i = this->armyNum - 1;
                         if (army[i]->knightType == DRAGON || army[i]->knightType == PALADIN || army[i]->knightType == LANCELOT)
                         {
                             double knightBaseDamage;
@@ -704,18 +720,25 @@ bool ArmyKnights::adventure(Events *events)
                             int UltiDamage = army[i]->hp * army[i]->level * knightBaseDamage;
                             opponent->UltiHP -= UltiDamage;
                             if (opponent->UltiHP >= 0)
+                            {
+                                if (i != armyNum - 1)
+                                    for (int j = i; j < armyNum - 1; j++)
+                                        army[j] = army[j + 1];
                                 this->armyNum--;
-                            if (opponent->UltiHP <= 0 && this->armyNum > 0)
+                                i--;
+                            }
+                            if (opponent->UltiHP <= 0 && i > 0)
                             {
                                 printInfo();
                                 return true;
                             }
-                            // coi lai tai de xay ra con tro lo lung
                         }
                         else
-                            this->armyNum--;
+                            i--;
                     }
                 }
+                else
+                    this->armyNum = 0;
                 break;
             }
             printInfo();

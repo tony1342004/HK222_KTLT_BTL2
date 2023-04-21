@@ -129,7 +129,8 @@ public:
 class BaseOpponent
 {
 protected:
-    int baseDamage, gil, levelO, eventid, appear, UltiHP;
+    int baseDamage, gil, levelO, eventid, UltiHP;
+    bool appear;
     string OpponentType;
 
 public:
@@ -140,6 +141,7 @@ public:
     friend PhoenixDownIV;
     friend Antidote;
     BaseOpponent(string OpponentType, int baseDamage, int gil, int eventid);
+    BaseOpponent(string OpponentType, int eventid, bool appear);
 };
 class MadBear : public BaseOpponent
 {
@@ -189,12 +191,12 @@ public:
 class OmegaWeapon : public BaseOpponent
 {
 public:
-    OmegaWeapon();
+    OmegaWeapon(bool appear);
 };
 class Hades : public BaseOpponent
 {
 public:
-    Hades();
+    Hades(bool appear);
 };
 class Ultimecia : public BaseOpponent
 {
@@ -265,10 +267,10 @@ class ArmyKnights
 {
     BaseKnight **army;
     int armyNum;
-    bool PaladinShield;
-    bool LancelotSpear;
-    bool GuinevereHair;
-    bool ExcaliburSword;
+    bool PaladinShield = false;
+    bool LancelotSpear = false;
+    bool GuinevereHair = false;
+    bool ExcaliburSword = false;
 
 public:
     ArmyKnights(const string &file_armyknights);
