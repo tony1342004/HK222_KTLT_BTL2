@@ -438,6 +438,7 @@ int ArmyKnights::compare(BaseItem *arr[4])
 bool ArmyKnights::fight(BaseOpponent *opponent)
 {
     int id = armyNum - 1;
+    int tempHP = army[id]->hp;
     if (opponent->OpponentType == "MadBear" || opponent->OpponentType == "Bandit" || opponent->OpponentType == "LordLupin" || opponent->OpponentType == "Elf" || opponent->OpponentType == "Troll")
     {
         if (army[id]->level < opponent->levelO && army[id]->knightType != LANCELOT && army[id]->knightType != PALADIN)
@@ -519,13 +520,18 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         Node *tempNode = army[id]->bag->head;
         while (tempNode != nullptr)
         {
-            if (tempNode->data->canUse(army[id]) == true)
+            if ((army[id]->hp < tempHP && tempNode->data->itemType != ANTIDOTE) || tempNode->data->itemType == ANTIDOTE)
             {
-                tempNode->data->use(army[id]);
-                BaseItem *data = tempNode->data;
-                tempNode = tempNode->next;
-                army[id]->bag->deleteItem(data);
-                break;
+                if (tempNode->data->canUse(army[id]) == true)
+                {
+                    tempNode->data->use(army[id]);
+                    BaseItem *data = tempNode->data;
+                    tempNode = tempNode->next;
+                    army[id]->bag->deleteItem(data);
+                    break;
+                }
+                else
+                    tempNode = tempNode->next;
             }
             else
                 tempNode = tempNode->next;
