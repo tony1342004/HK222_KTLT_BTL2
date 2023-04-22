@@ -78,7 +78,7 @@ int BaseKnight::pythagoras(int n)
     int a = n % 10;
     int b = (n % 100 - a) / 10;
     int c = (n - a - b * 10) / 100;
-    if (n > 100 && n < 999)
+    if (n > 100 && n < 999 && a != 0 && b != 0 && c != 0)
     {
         if (pow(a, 2) == pow(b, 2) + pow(c, 2) || pow(b, 2) == pow(a, 2) + pow(c, 2) || pow(c, 2) == pow(a, 2) + pow(b, 2))
             return 1;
