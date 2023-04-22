@@ -671,15 +671,30 @@ bool ArmyKnights::adventure(Events *events)
             {
             case 112:
                 item = new PhoenixDownII();
-                army[id]->bag->insertFirst(item);
+                if (army[id]->bag->insertFirst(item) == false)
+                {
+                    int i = 1;
+                    while (army[id - i]->bag->insertFirst(item) == false)
+                        i++;
+                }
                 break;
             case 113:
                 item = new PhoenixDownIII();
-                army[id]->bag->insertFirst(item);
+                if (army[id]->bag->insertFirst(item) == false)
+                {
+                    int i = 1;
+                    while (army[id - i]->bag->insertFirst(item) == false)
+                        i++;
+                }
                 break;
             case 114:
                 item = new PhoenixDownIV();
-                army[id]->bag->insertFirst(item);
+                if (army[id]->bag->insertFirst(item) == false)
+                {
+                    int i = 1;
+                    while (army[id - i]->bag->insertFirst(item) == false)
+                        i++;
+                }
                 break;
             case 95:
                 this->PaladinShield = true;
@@ -698,12 +713,12 @@ bool ArmyKnights::adventure(Events *events)
                 break;
             case 99:
                 opponent = new Ultimecia;
-                if (hasExcaliburSword() == true)
+                if (ExcaliburSword == true)
                 {
                     printInfo();
                     return true;
                 }
-                else if (hasLancelotSpear() == true && hasPaladinShield() == true && hasGuinevereHair() == true)
+                else if (LancelotSpear == true && PaladinShield == true && GuinevereHair == true)
                 {
                     int i = this->armyNum - 1;
                     while (i >= 0)
