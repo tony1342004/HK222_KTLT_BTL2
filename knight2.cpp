@@ -478,7 +478,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         if (army[id]->level >= opponent->levelO)
             army[id]->gil *= 2;
         else if (army[id]->knightType != PALADIN)
-            army[id]->gil /= 2;
+            army[id]->gil = int(army[id]->gil / 2);
     }
     else if (opponent->OpponentType == "NinadeRings")
     {
@@ -546,42 +546,42 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     {
         int t = 1;
         int excessiveGil = army[id]->gil - 999;
+        army[id]->gil = 999;
         while (excessiveGil > 0)
         {
-            army[id]->gil = 999;
-            if (t >= id)
-                break;
             army[id - t]->gil += excessiveGil;
             excessiveGil = army[id - t]->gil - 999;
             t++;
+            if (t >= id)
+                break;
         }
     }
     if (army[id]->phoenixdownI > 5)
     {
         int t = 1;
         int excessivePDI = army[id]->phoenixdownI - 5;
+        army[id]->phoenixdownI = 5;
         while (excessivePDI > 0)
         {
-            army[id]->phoenixdownI = 5;
-            if (t > id)
-                break;
             army[id - t]->phoenixdownI += excessivePDI;
             excessivePDI = army[id - t]->phoenixdownI - 5;
             t++;
+            if (t > id)
+                break;
         }
     }
     if (army[id]->antidote > 5)
     {
         int t = 1;
         int excessiveAntidote = army[id]->antidote - 5;
+        army[id]->antidote = 5;
         while (excessiveAntidote > 0)
         {
-            army[id]->antidote = 5;
-            if (t > id)
-                break;
             army[id - t]->antidote += excessiveAntidote;
             excessiveAntidote = army[id - t]->antidote - 5;
             t++;
+            if (t > id)
+                break;
         }
     }
 
@@ -673,27 +673,39 @@ bool ArmyKnights::adventure(Events *events)
                 item = new PhoenixDownII();
                 if (army[id]->bag->insertFirst(item) == false)
                 {
-                    int i = 1;
-                    while (army[id - i]->bag->insertFirst(item) == false)
-                        i++;
+                    int k = 1;
+                    while (army[id - k]->bag->insertFirst(item) == false)
+                    {
+                        k++;
+                        if (k > id)
+                            break;
+                    }
                 }
                 break;
             case 113:
                 item = new PhoenixDownIII();
                 if (army[id]->bag->insertFirst(item) == false)
                 {
-                    int i = 1;
-                    while (army[id - i]->bag->insertFirst(item) == false)
-                        i++;
+                    int k = 1;
+                    while (army[id - k]->bag->insertFirst(item) == false)
+                    {
+                        k++;
+                        if (k > id)
+                            break;
+                    }
                 }
                 break;
             case 114:
                 item = new PhoenixDownIV();
                 if (army[id]->bag->insertFirst(item) == false)
                 {
-                    int i = 1;
-                    while (army[id - i]->bag->insertFirst(item) == false)
-                        i++;
+                    int k = 1;
+                    while (army[id - k]->bag->insertFirst(item) == false)
+                    {
+                        k++;
+                        if (k > id)
+                            break;
+                    }
                 }
                 break;
             case 95:
