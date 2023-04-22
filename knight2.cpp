@@ -141,7 +141,7 @@ void PhoenixDownI::use(BaseKnight *knight)
 PhoenixDownII::PhoenixDownII() : BaseItem(PHOENIXII) {}
 bool PhoenixDownII::canUse(BaseKnight *knight)
 {
-    if (knight->hp < int((knight->hp) / 4))
+    if (knight->hp < int((knight->maxhp) / 4))
         return true;
     return false;
 }
@@ -516,19 +516,19 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     }
     if (army[id]->bag->countItem() != 0)
     {
-        Node *temp = army[id]->bag->head;
-        while (temp != nullptr)
+        Node *tempNode = army[id]->bag->head;
+        while (tempNode != nullptr)
         {
-            if (temp->data->canUse(army[id]) == true)
+            if (tempNode->data->canUse(army[id]) == true)
             {
-                temp->data->use(army[id]);
-                BaseItem *data = temp->data;
-                temp = temp->next;
+                tempNode->data->use(army[id]);
+                BaseItem *data = tempNode->data;
+                tempNode = tempNode->next;
                 army[id]->bag->deleteItem(data);
                 break;
             }
             else
-                temp = temp->next;
+                tempNode = tempNode->next;
         }
     }
     if (army[id]->hp <= 0)
