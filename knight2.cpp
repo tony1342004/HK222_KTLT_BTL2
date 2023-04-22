@@ -549,11 +549,11 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         army[id]->gil = 999;
         while (excessiveGil > 0)
         {
+            if (t >= id)
+                break;
             army[id - t]->gil += excessiveGil;
             excessiveGil = army[id - t]->gil - 999;
             t++;
-            if (t >= id)
-                break;
         }
     }
     if (army[id]->phoenixdownI > 5)
@@ -563,11 +563,11 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         army[id]->phoenixdownI = 5;
         while (excessivePDI > 0)
         {
+            if (t > id)
+                break;
             army[id - t]->phoenixdownI += excessivePDI;
             excessivePDI = army[id - t]->phoenixdownI - 5;
             t++;
-            if (t > id)
-                break;
         }
     }
     if (army[id]->antidote > 5)
@@ -577,11 +577,11 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         army[id]->antidote = 5;
         while (excessiveAntidote > 0)
         {
+            if (t > id)
+                break;
             army[id - t]->antidote += excessiveAntidote;
             excessiveAntidote = army[id - t]->antidote - 5;
             t++;
-            if (t > id)
-                break;
         }
     }
 
@@ -676,9 +676,9 @@ bool ArmyKnights::adventure(Events *events)
                     int k = 1;
                     while (army[id - k]->bag->insertFirst(item) == false)
                     {
-                        k++;
                         if (k > id)
                             break;
+                        k++;
                     }
                 }
                 break;
@@ -689,9 +689,9 @@ bool ArmyKnights::adventure(Events *events)
                     int k = 1;
                     while (army[id - k]->bag->insertFirst(item) == false)
                     {
-                        k++;
                         if (k > id)
                             break;
+                        k++;
                     }
                 }
                 break;
@@ -702,9 +702,9 @@ bool ArmyKnights::adventure(Events *events)
                     int k = 1;
                     while (army[id - k]->bag->insertFirst(item) == false)
                     {
-                        k++;
                         if (k > id)
                             break;
+                        k++;
                     }
                 }
                 break;
