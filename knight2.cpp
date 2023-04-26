@@ -17,15 +17,10 @@ Events::Events(const string &file_events)
         c++;
 }
 
-int Events::count() const
-{
-    return this->evntnum;
-}
+int Events::count() const { return this->evntnum; }
 
-int Events::get(int i) const
-{
-    return evnt[i];
-}
+int Events::get(int i) const { return evnt[i]; }
+
 Events::~Events()
 {
     delete[] evnt;
@@ -123,10 +118,7 @@ bool Antidote::canUse(BaseKnight *knight)
         return true;
     return false;
 }
-void Antidote::use(BaseKnight *knight)
-{
-    knight->poisened = false;
-}
+void Antidote::use(BaseKnight *knight) { knight->poisened = false; }
 PhoenixDownI::PhoenixDownI() : BaseItem(PHOENIXI) {}
 bool PhoenixDownI::canUse(BaseKnight *knight)
 {
@@ -134,10 +126,7 @@ bool PhoenixDownI::canUse(BaseKnight *knight)
         return true;
     return false;
 }
-void PhoenixDownI::use(BaseKnight *knight)
-{
-    knight->hp = knight->maxhp;
-}
+void PhoenixDownI::use(BaseKnight *knight) { knight->hp = knight->maxhp; }
 PhoenixDownII::PhoenixDownII() : BaseItem(PHOENIXII) {}
 bool PhoenixDownII::canUse(BaseKnight *knight)
 {
@@ -145,10 +134,7 @@ bool PhoenixDownII::canUse(BaseKnight *knight)
         return true;
     return false;
 }
-void PhoenixDownII::use(BaseKnight *knight)
-{
-    knight->hp = knight->maxhp;
-}
+void PhoenixDownII::use(BaseKnight *knight) { knight->hp = knight->maxhp; }
 PhoenixDownIII::PhoenixDownIII() : BaseItem(PHOENIXIII) {}
 bool PhoenixDownIII::canUse(BaseKnight *knight)
 {
@@ -299,8 +285,7 @@ bool PaladinBag::insertFirst(BaseItem *item)
 LancelotBag::LancelotBag() : BaseBag() {}
 bool LancelotBag::insertFirst(BaseItem *item)
 {
-    int count = countItem();
-    if (count >= maxItems)
+    if (countItem() == maxItems)
         return false;
     else
     {
@@ -318,8 +303,7 @@ bool LancelotBag::insertFirst(BaseItem *item)
 DragonBag::DragonBag() : BaseBag() {}
 bool DragonBag::insertFirst(BaseItem *item)
 {
-    int count = countItem();
-    if (count >= maxItems)
+    if (countItem() == maxItems)
         return false;
     else
     {
@@ -337,8 +321,7 @@ bool DragonBag::insertFirst(BaseItem *item)
 NormalBag::NormalBag() : BaseBag() {}
 bool NormalBag::insertFirst(BaseItem *item)
 {
-    int count = countItem();
-    if (count >= maxItems)
+    if (countItem() == maxItems)
         return false;
     else
     {
@@ -557,8 +540,17 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         {
             if (t >= id)
                 break;
-            army[id - t]->gil += excessiveGil;
-            excessiveGil = army[id - t]->gil - 999;
+            int excessive = 999 - army[id - t]->gil;
+            if (excessiveGil <= excessive)
+            {
+                army[id - t]->gil += excessiveGil;
+                break;
+            }
+            else
+            {
+                army[id - t]->gil = 999;
+                excessiveGil -= excessive;
+            }
             t++;
         }
     }
@@ -741,18 +733,18 @@ bool ArmyKnights::adventure(Events *events)
                     int i = this->armyNum - 1;
                     while (i >= 0)
                     {
-                        if (army[i]->knightType == DRAGON || army[i]->knightType == PALADIN || army[i]->knightType == LANCELOT)
+                        if (army[i]->knightType != NORMAL)
                         {
                             double knightBaseDamage;
                             if (army[i]->knightType == DRAGON)
                                 knightBaseDamage = 0.075;
                             else if (army[i]->knightType == PALADIN)
                                 knightBaseDamage = 0.06;
-                            else
+                            else if (army[i]->knightType == LANCELOT)
                                 knightBaseDamage = 0.05;
                             int UltiDamage = army[i]->hp * army[i]->level * knightBaseDamage;
                             opponent->UltiHP -= UltiDamage;
-                            if (opponent->UltiHP >= 0)
+                            if (opponent->UltiHP > 0)
                             {
                                 if (i < armyNum - 1)
                                     for (int j = i; j < this->armyNum - 1; j++)
@@ -760,7 +752,7 @@ bool ArmyKnights::adventure(Events *events)
                                 i--;
                                 this->armyNum--;
                             }
-                            if (opponent->UltiHP <= 0 && i > 0)
+                            if (opponent->UltiHP <= 0)
                             {
                                 printInfo();
                                 return true;
@@ -782,14 +774,8 @@ bool ArmyKnights::adventure(Events *events)
     }
     return false;
 }
-int ArmyKnights::count() const
-{
-    return this->armyNum;
-}
-BaseKnight *ArmyKnights::lastKnight() const
-{
-    return army[armyNum - 1];
-}
+int ArmyKnights::count() const { return this->armyNum; }
+BaseKnight *ArmyKnights::lastKnight() const { return army[armyNum - 1]; }
 bool ArmyKnights::hasPaladinShield() const
 {
     if (this->PaladinShield == true)
@@ -830,10 +816,7 @@ void ArmyKnights::printInfo() const
          << string(50, '-') << endl;
 }
 
-void ArmyKnights::printResult(bool win) const
-{
-    cout << (win ? "WIN" : "LOSE") << endl;
-}
+void ArmyKnights::printResult(bool win) const { cout << (win ? "WIN" : "LOSE") << endl; }
 /* * * END implementation of class ArmyKnights * * */
 
 /* * * BEGIN implementation of class KnightAdventure * * */
@@ -843,14 +826,8 @@ KnightAdventure::KnightAdventure()
     events = nullptr;
 }
 
-void KnightAdventure::loadArmyKnights(const string &file_armyknights)
-{
-    armyKnights = new ArmyKnights(file_armyknights);
-}
-void KnightAdventure::loadEvents(const string &file_events)
-{
-    events = new Events(file_events);
-}
+void KnightAdventure::loadArmyKnights(const string &file_armyknights) { armyKnights = new ArmyKnights(file_armyknights); }
+void KnightAdventure::loadEvents(const string &file_events) { events = new Events(file_events); }
 void KnightAdventure::run()
 {
     if (armyKnights->adventure(events) == true)
