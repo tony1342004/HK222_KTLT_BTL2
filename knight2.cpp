@@ -49,23 +49,15 @@ Ultimecia::Ultimecia() : BaseOpponent("Ultimecia", 0, 0, 99) { UltiHP = 5000; }
 BaseKnight::BaseKnight(int id, int maxhp, int level, int phoenixdownI, int gil, int antidote, KnightType knightType) : id(id), maxhp(maxhp), level(level), gil(gil), antidote(antidote), phoenixdownI(phoenixdownI), hp(maxhp), knightType(knightType), poisened(false) {}
 int BaseKnight::snt(int a)
 {
-    int n = 0;
-    int k = 0;
-    if (a <= 1)
-        n = 0;
+    if (a == 1)
+        return 0;
     else if (a == 2)
-        n = 1;
+        return 1;
     else
-    {
         for (int i = 2; i < a; i++)
             if (a % i == 0)
-                k++;
-        if (k != 0)
-            n = 0;
-        else
-            n = 1;
-    }
-    return n;
+                return 0;
+    return 1;
 }
 
 int BaseKnight::pythagoras(int n)
@@ -88,7 +80,7 @@ BaseKnight *BaseKnight::create(int id, int maxhp, int level, int phoenixdownI, i
         knight = new PaladinKnight(id, maxhp, level, phoenixdownI, gil, antidote, PALADIN);
     else if (maxhp == 888)
         knight = new LancelotKnight(id, maxhp, level, phoenixdownI, gil, antidote, LANCELOT);
-    else if (pythagoras(maxhp))
+    else if (pythagoras(maxhp) == 1)
         knight = new DragonKnight(id, maxhp, level, phoenixdownI, gil, antidote, DRAGON);
     else
         knight = new NormalKnight(id, maxhp, level, phoenixdownI, gil, antidote, NORMAL);
@@ -193,7 +185,7 @@ bool BaseBag::search(ItemType itemType)
 
 BaseItem *BaseBag::get(ItemType itemType)
 {
-    if (search(itemType) == 0)
+    if (search(itemType) == false)
         return nullptr;
 
     if (head->data->itemType == itemType)
@@ -392,31 +384,6 @@ ArmyKnights::~ArmyKnights()
         delete army[i];
     delete[] army;
 }
-int ArmyKnights::compare(BaseItem *arr[4])
-{
-    int n = 0;
-    for (int i = 0; i < 3; i++)
-    {
-        if (arr[i] != nullptr)
-            n++;
-        else
-        {
-            BaseItem *temp1 = arr[i];
-            arr[i] = arr[i + 1];
-            arr[i + 1] = temp1;
-        }
-        for (int j = i + 1; j < 4; j++)
-        {
-            if (arr[i] > arr[j] && arr[j] != nullptr)
-            {
-                BaseItem *temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-            }
-        }
-    }
-    return n;
-}
 
 bool ArmyKnights::fight(BaseOpponent *opponent)
 {
@@ -426,9 +393,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
     {
         if (army[id]->level < opponent->levelO && army[id]->knightType != LANCELOT && army[id]->knightType != PALADIN)
             army[id]->hp -= opponent->baseDamage * (opponent->levelO - army[id]->level);
-        else if (army[id]->knightType == LANCELOT || army[id]->knightType == PALADIN)
-            army[id]->gil += opponent->gil;
-        else if (army[id]->level >= opponent->levelO)
+        else if (army[id]->knightType == LANCELOT || army[id]->knightType == PALADIN || army[id]->level >= opponent->levelO)
             army[id]->gil += opponent->gil;
     }
     else if (opponent->OpponentType == "Tornbery")
@@ -498,7 +463,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         else
             army[id]->hp = 0;
     }
-    if (army[id]->bag->countItem() != 0)
+    if (army[id]->bag->countItem() > 0)
     {
         Node *tempNode = army[id]->bag->head;
         while (tempNode != nullptr)
@@ -520,7 +485,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
                 tempNode = tempNode->next;
         }
     }
-    if (army[id]->hp <= 0)
+    if (army[id]->hp <= 0 && army[id]->hp < tempHP)
         if (army[id]->gil >= 100)
         {
             army[id]->gil -= 100;
@@ -538,7 +503,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         army[id]->gil = 999;
         while (excessiveGil > 0)
         {
-            if (t >= id)
+            if (t > id)
                 break;
             int excessive = 999 - army[id - t]->gil;
             if (excessiveGil <= excessive)
@@ -563,8 +528,17 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         {
             if (t > id)
                 break;
-            army[id - t]->phoenixdownI += excessivePDI;
-            excessivePDI = army[id - t]->phoenixdownI - 5;
+            int excessive = 5 - army[id - t]->phoenixdownI;
+            if (excessivePDI <= excessive)
+            {
+                army[id - t]->phoenixdownI += excessivePDI;
+                break;
+            }
+            else
+            {
+                army[id - t]->phoenixdownI = 5;
+                excessivePDI -= excessive;
+            }
             t++;
         }
     }
@@ -577,8 +551,17 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
         {
             if (t > id)
                 break;
-            army[id - t]->antidote += excessiveAntidote;
-            excessiveAntidote = army[id - t]->antidote - 5;
+            int excessive = 5 - army[id - t]->antidote;
+            if (excessiveAntidote <= excessive)
+            {
+                army[id - t]->antidote += excessiveAntidote;
+                break;
+            }
+            else
+            {
+                army[id - t]->antidote = 5;
+                excessiveAntidote -= excessive;
+            }
             t++;
         }
     }
@@ -672,11 +655,12 @@ bool ArmyKnights::adventure(Events *events)
                 if (army[id]->bag->insertFirst(item) == false)
                 {
                     int k = 1;
-                    while (army[id - k]->bag->insertFirst(item) == false)
+                    while (k <= id)
                     {
-                        if (k > id)
+                        if (army[id - k]->bag->insertFirst(item) == false)
+                            k++;
+                        else
                             break;
-                        k++;
                     }
                 }
                 break;
@@ -685,11 +669,12 @@ bool ArmyKnights::adventure(Events *events)
                 if (army[id]->bag->insertFirst(item) == false)
                 {
                     int k = 1;
-                    while (army[id - k]->bag->insertFirst(item) == false)
+                    while (k <= id)
                     {
-                        if (k > id)
+                        if (army[id - k]->bag->insertFirst(item) == false)
+                            k++;
+                        else
                             break;
-                        k++;
                     }
                 }
                 break;
@@ -698,11 +683,12 @@ bool ArmyKnights::adventure(Events *events)
                 if (army[id]->bag->insertFirst(item) == false)
                 {
                     int k = 1;
-                    while (army[id - k]->bag->insertFirst(item) == false)
+                    while (k <= id)
                     {
-                        if (k > id)
+                        if (army[id - k]->bag->insertFirst(item) == false)
+                            k++;
+                        else
                             break;
-                        k++;
                     }
                 }
                 break;
@@ -749,6 +735,8 @@ bool ArmyKnights::adventure(Events *events)
                                 if (i < armyNum - 1)
                                     for (int j = i; j < this->armyNum - 1; j++)
                                         army[j] = army[j + 1];
+                                delete[] army[i];
+                                army[i] = nullptr;
                                 i--;
                                 this->armyNum--;
                             }
