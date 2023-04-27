@@ -220,10 +220,12 @@ class BaseBag
 
 protected:
     Node *head;
+    int maxItems;
 
 public:
     friend ArmyKnights;
     BaseBag();
+    BaseBag(int maxItems);
     virtual bool insertFirst(BaseItem *item) = 0;
     BaseItem *get(ItemType itemType);
     string toString();
@@ -240,7 +242,6 @@ public:
 };
 class LancelotBag : public BaseBag
 {
-    int maxItems = 14;
 
 public:
     LancelotBag();
@@ -248,7 +249,6 @@ public:
 };
 class DragonBag : public BaseBag
 {
-    int maxItems = 16;
 
 public:
     DragonBag();
@@ -256,7 +256,6 @@ public:
 };
 class NormalBag : public BaseBag
 {
-    int maxItems = 19;
 
 public:
     NormalBag();

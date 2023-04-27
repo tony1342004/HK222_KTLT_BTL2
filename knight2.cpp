@@ -158,6 +158,7 @@ void PhoenixDownIV::use(BaseKnight *knight)
 /* * * END implementation of class BaseItem * * */
 
 /* * * BEGIN implementation of class BaseBag * * */
+BaseBag::BaseBag(int maxItems) : head(nullptr), maxItems(maxItems) {}
 BaseBag::BaseBag() : head(nullptr) {}
 int BaseBag::countItem()
 {
@@ -274,7 +275,7 @@ bool PaladinBag::insertFirst(BaseItem *item)
     }
     return true;
 }
-LancelotBag::LancelotBag() : BaseBag() {}
+LancelotBag::LancelotBag() : BaseBag(16) {}
 bool LancelotBag::insertFirst(BaseItem *item)
 {
     if (countItem() == maxItems)
@@ -292,7 +293,7 @@ bool LancelotBag::insertFirst(BaseItem *item)
     }
     return true;
 }
-DragonBag::DragonBag() : BaseBag() {}
+DragonBag::DragonBag() : BaseBag(14) {}
 bool DragonBag::insertFirst(BaseItem *item)
 {
     if (countItem() == maxItems)
@@ -310,7 +311,7 @@ bool DragonBag::insertFirst(BaseItem *item)
     }
     return true;
 }
-NormalBag::NormalBag() : BaseBag() {}
+NormalBag::NormalBag() : BaseBag(19) {}
 bool NormalBag::insertFirst(BaseItem *item)
 {
     if (countItem() == maxItems)
@@ -735,8 +736,6 @@ bool ArmyKnights::adventure(Events *events)
                                 if (i < armyNum - 1)
                                     for (int j = i; j < this->armyNum - 1; j++)
                                         army[j] = army[j + 1];
-                                delete[] army[i];
-                                army[i] = nullptr;
                                 i--;
                                 this->armyNum--;
                             }
