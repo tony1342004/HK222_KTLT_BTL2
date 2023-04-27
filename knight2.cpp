@@ -478,7 +478,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
                     tempNode = tempNode->next;
                     army[id]->bag->deleteItem(data);
                     if (army[id]->hp <= 0 && army[id]->bag->countItem() != 0)
-                        tempNode = tempNode->next;
+                        continue;
                     else
                         break;
                 }
@@ -636,8 +636,13 @@ bool ArmyKnights::adventure(Events *events)
                     delete army[armyNum - 1];
                     armyNum--;
                 }
-                else
+                else if (armyNum == 1)
+                {
+                    armyNum--;
+                    delete army[0];
+                    printInfo();
                     return false;
+                }
             }
             else
             {
