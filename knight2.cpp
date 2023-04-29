@@ -477,10 +477,7 @@ bool ArmyKnights::fight(BaseOpponent *opponent)
                     BaseItem *data = tempNode->data;
                     tempNode = tempNode->next;
                     army[id]->bag->deleteItem(data);
-                    if (army[id]->hp <= 0 && army[id]->bag->countItem() != 0)
-                        continue;
-                    else
-                        break;
+                    break;
                 }
                 else
                     tempNode = tempNode->next;
