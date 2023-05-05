@@ -388,6 +388,8 @@ ArmyKnights::~ArmyKnights()
 
 bool ArmyKnights::fight(BaseOpponent *opponent)
 {
+    if (armyNum == 0)
+        return false;
     int id = armyNum - 1;
     int tempHP = army[id]->hp;
     if (opponent->OpponentType == "MadBear" || opponent->OpponentType == "Bandit" || opponent->OpponentType == "LordLupin" || opponent->OpponentType == "Elf" || opponent->OpponentType == "Troll")
@@ -582,186 +584,200 @@ bool ArmyKnights::adventure(Events *events)
     while (i < events->evntnum)
     {
         int eveID = events->get(i);
-        if (eveID >= 1 && eveID <= 11)
+        if (armyNum == 0)
         {
-            switch (eveID)
+            if (i < events->evntnum - 1)
             {
-            case 1:
-                opponent = new MadBear(i);
-                break;
-            case 2:
-                opponent = new Bandit(i);
-                break;
-            case 3:
-                opponent = new LordLupin(i);
-                break;
-            case 4:
-                opponent = new Elf(i);
-                break;
-            case 5:
-                opponent = new Troll(i);
-                break;
-            case 6:
-                opponent = new Tornbery(i);
-                break;
-            case 7:
-                opponent = new QueenofCards(i);
-                break;
-            case 8:
-                opponent = new NinaDeRings();
-                break;
-            case 9:
-                opponent = new DurianGarden();
-                break;
-            case 10:
-                opponent = new OmegaWeapon(appearOmegaWeapon);
-                break;
-            case 11:
-                opponent = new Hades(appearHades);
-                break;
-            }
-            if ((eveID == 10 && appearOmegaWeapon == true) || (eveID == 11 && appearHades == true))
-            {
-                i++;
-                printInfo();
-                continue;
-            }
-            if (fight(opponent) == false)
-            {
-                if (armyNum > 1)
-                {
-                    delete army[armyNum - 1];
-                    armyNum--;
-                }
-                else if (armyNum == 1)
-                {
-                    armyNum--;
-                    delete army[0];
-                    printInfo();
-                    return false;
-                }
-            }
-            else
-            {
-                if (opponent->OpponentType == "Hades" && opponent->appear == true)
-                    appearHades = true;
-                if (opponent->OpponentType == "OmegaWeapon" && opponent->appear == true)
-                    appearOmegaWeapon = true;
                 printInfo();
                 i++;
+            }
+            else if (i == events->evntnum - 1)
+            {
+                printInfo();
+                return false;
             }
         }
         else
         {
-            int id = this->armyNum - 1;
-            switch (eveID)
+            if (eveID >= 1 && eveID <= 11)
             {
-            case 112:
-                item = new PhoenixDownII();
-                if (army[id]->bag->insertFirst(item) == false)
+                switch (eveID)
                 {
-                    int k = 1;
-                    while (k <= id)
-                    {
-                        if (army[id - k]->bag->insertFirst(item) == false)
-                            k++;
-                        else
-                            break;
-                    }
+                case 1:
+                    opponent = new MadBear(i);
+                    break;
+                case 2:
+                    opponent = new Bandit(i);
+                    break;
+                case 3:
+                    opponent = new LordLupin(i);
+                    break;
+                case 4:
+                    opponent = new Elf(i);
+                    break;
+                case 5:
+                    opponent = new Troll(i);
+                    break;
+                case 6:
+                    opponent = new Tornbery(i);
+                    break;
+                case 7:
+                    opponent = new QueenofCards(i);
+                    break;
+                case 8:
+                    opponent = new NinaDeRings();
+                    break;
+                case 9:
+                    opponent = new DurianGarden();
+                    break;
+                case 10:
+                    opponent = new OmegaWeapon(appearOmegaWeapon);
+                    break;
+                case 11:
+                    opponent = new Hades(appearHades);
+                    break;
                 }
-                break;
-            case 113:
-                item = new PhoenixDownIII();
-                if (army[id]->bag->insertFirst(item) == false)
+                if ((eveID == 10 && appearOmegaWeapon == true) || (eveID == 11 && appearHades == true))
                 {
-                    int k = 1;
-                    while (k <= id)
-                    {
-                        if (army[id - k]->bag->insertFirst(item) == false)
-                            k++;
-                        else
-                            break;
-                    }
-                }
-                break;
-            case 114:
-                item = new PhoenixDownIV();
-                if (army[id]->bag->insertFirst(item) == false)
-                {
-                    int k = 1;
-                    while (k <= id)
-                    {
-                        if (army[id - k]->bag->insertFirst(item) == false)
-                            k++;
-                        else
-                            break;
-                    }
-                }
-                break;
-            case 95:
-                this->PaladinShield = true;
-                break;
-            case 96:
-                this->LancelotSpear = true;
-                break;
-            case 97:
-                this->GuinevereHair = true;
-                break;
-            case 98:
-                if (PaladinShield == true && LancelotSpear == true && GuinevereHair == true)
-                    this->ExcaliburSword = true;
-                else
-                    this->ExcaliburSword = false;
-                break;
-            case 99:
-                opponent = new Ultimecia;
-                if (ExcaliburSword == true)
-                {
+                    i++;
                     printInfo();
-                    return true;
+                    continue;
                 }
-                else if (LancelotSpear == true && PaladinShield == true && GuinevereHair == true)
+                if (fight(opponent) == false)
                 {
-                    int i = this->armyNum - 1;
-                    while (i >= 0)
+                    if (armyNum > 1)
                     {
-                        if (army[i]->knightType != NORMAL)
-                        {
-                            double knightBaseDamage;
-                            if (army[i]->knightType == DRAGON)
-                                knightBaseDamage = 0.075;
-                            else if (army[i]->knightType == PALADIN)
-                                knightBaseDamage = 0.06;
-                            else if (army[i]->knightType == LANCELOT)
-                                knightBaseDamage = 0.05;
-                            int UltiDamage = army[i]->hp * army[i]->level * knightBaseDamage;
-                            opponent->UltiHP -= UltiDamage;
-                            if (opponent->UltiHP > 0)
-                            {
-                                if (i < armyNum - 1)
-                                    for (int j = i; j < this->armyNum - 1; j++)
-                                        army[j] = army[j + 1];
-                                i--;
-                                this->armyNum--;
-                            }
-                            if (opponent->UltiHP <= 0)
-                            {
-                                printInfo();
-                                return true;
-                            }
-                        }
-                        else
-                            i--;
+                        delete army[armyNum - 1];
+                        armyNum--;
                     }
-                    if (opponent->UltiHP > 0)
-                        this->armyNum = 0;
+                    else if (armyNum == 1)
+                    {
+                        armyNum--;
+                        delete army[0];
+                    }
                 }
                 else
-                    this->armyNum = 0;
-                break;
+                {
+                    if (opponent->OpponentType == "Hades" && opponent->appear == true)
+                        appearHades = true;
+                    if (opponent->OpponentType == "OmegaWeapon" && opponent->appear == true)
+                        appearOmegaWeapon = true;
+                    printInfo();
+                    i++;
+                }
             }
-            printInfo();
-            i++;
+            else
+            {
+                int id = this->armyNum - 1;
+                switch (eveID)
+                {
+                case 112:
+                    item = new PhoenixDownII();
+                    if (army[id]->bag->insertFirst(item) == false)
+                    {
+                        int k = 1;
+                        while (k <= id)
+                        {
+                            if (army[id - k]->bag->insertFirst(item) == false)
+                                k++;
+                            else
+                                break;
+                        }
+                    }
+                    break;
+                case 113:
+                    item = new PhoenixDownIII();
+                    if (army[id]->bag->insertFirst(item) == false)
+                    {
+                        int k = 1;
+                        while (k <= id)
+                        {
+                            if (army[id - k]->bag->insertFirst(item) == false)
+                                k++;
+                            else
+                                break;
+                        }
+                    }
+                    break;
+                case 114:
+                    item = new PhoenixDownIV();
+                    if (army[id]->bag->insertFirst(item) == false)
+                    {
+                        int k = 1;
+                        while (k <= id)
+                        {
+                            if (army[id - k]->bag->insertFirst(item) == false)
+                                k++;
+                            else
+                                break;
+                        }
+                    }
+                    break;
+                case 95:
+                    this->PaladinShield = true;
+                    break;
+                case 96:
+                    this->LancelotSpear = true;
+                    break;
+                case 97:
+                    this->GuinevereHair = true;
+                    break;
+                case 98:
+                    if (PaladinShield == true && LancelotSpear == true && GuinevereHair == true)
+                        this->ExcaliburSword = true;
+                    else
+                        this->ExcaliburSword = false;
+                    break;
+                case 99:
+                    opponent = new Ultimecia;
+                    if (ExcaliburSword == true)
+                    {
+                        printInfo();
+                        return true;
+                    }
+                    else if (LancelotSpear == true && PaladinShield == true && GuinevereHair == true)
+                    {
+                        int i = this->armyNum - 1;
+                        while (i >= 0)
+                        {
+                            if (army[i]->knightType != NORMAL)
+                            {
+                                double knightBaseDamage;
+                                if (army[i]->knightType == DRAGON)
+                                    knightBaseDamage = 0.075;
+                                else if (army[i]->knightType == PALADIN)
+                                    knightBaseDamage = 0.06;
+                                else if (army[i]->knightType == LANCELOT)
+                                    knightBaseDamage = 0.05;
+                                int UltiDamage = army[i]->hp * army[i]->level * knightBaseDamage;
+                                opponent->UltiHP -= UltiDamage;
+                                if (opponent->UltiHP > 0)
+                                {
+                                    if (i < armyNum - 1)
+                                        for (int j = i; j < this->armyNum - 1; j++)
+                                            army[j] = army[j + 1];
+                                    i--;
+                                    this->armyNum--;
+                                }
+                                if (opponent->UltiHP <= 0)
+                                {
+                                    printInfo();
+                                    return true;
+                                }
+                            }
+                            else
+                                i--;
+                        }
+                        if (opponent->UltiHP > 0)
+                            this->armyNum = 0;
+                    }
+                    else
+                        this->armyNum = 0;
+                    break;
+                }
+                printInfo();
+                i++;
+            }
         }
     }
     return false;
