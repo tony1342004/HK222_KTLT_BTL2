@@ -14,7 +14,11 @@ Events::Events(const string &file_events)
     ss >> this->evntnum;
     evnt = new int[evntnum];
     while (ss >> evnt[c])
+    {
         c++;
+        if (c == evntnum)
+            break;
+    }
 }
 
 int Events::count() const { return this->evntnum; }
@@ -755,10 +759,18 @@ bool ArmyKnights::adventure(Events *events)
                             i--;
                     }
                     if (opponent->UltiHP > 0)
+                    {
                         this->armyNum = 0;
+                        printInfo();
+                        return false;
+                    }
                 }
                 else
+                {
                     this->armyNum = 0;
+                    printInfo();
+                    return false;
+                }
                 break;
             default:
                 break;
