@@ -1,0 +1,17 @@
+Chào các bạn.
+
+Đây là bộ test-cây nhà lá vườn của mình nhằm test một vài trường hợp đặc biệt sau khi các bạn đã đúng hết trên submission.
+Kết quả trong SampleOutput dùng để so sánh với kết quả của các bạn, SampleOutput CÓ THỂ SAI, nếu thấy sai sót hoặc thắc mắc, cứ liên hệ mình để mình cùng thảo luận và chỉnh sửa.
+
+Để đỡ phải chạy từng tc một và check bằng mắt, mình có code các tool để tiện cho việc so sánh. Bạn thực hiện theo các bước như sau:
+B1: Copy file knight2.cpp và knight2.h của bạn vào thư mục này.
+B2: Chạy test.exe, output sẽ cho ra kết quả 10 testcase, bạn ctrl+A, copy toàn bộ trên console rồi dán vào file output, lưu lại.
+B3: Chạy check.exe, những dòng khác biệt sẽ được hiển thị trên console. 
+
+!!Lưu ý: nếu không phải hệ điều hành Window, thì ở bước 2 bạn phải tự chạy từng testcase một rồi copy dán vào output như định dạng trong SampleOutput chứ ko được dùng test.exe
+
+Bạn cũng có thể chỉnh file test.cpp trong này để chạy thêm testcase nếu muốn.
+
+Nếu có các testcase đặc biệt khác, bạn có thể up lên link drive này ( nên tạo một thư mục mới ), mọi người có thể test và cùng thảo luận để hoàn thiện bài tập lớn.
+
+Nếu có sai sót, mong mn bỏ qua, mình xin cảm ơn.
